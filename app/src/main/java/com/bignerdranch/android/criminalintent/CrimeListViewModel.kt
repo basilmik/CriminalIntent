@@ -1,6 +1,7 @@
 package com.bignerdranch.android.criminalintent
 
 import androidx.lifecycle.ViewModel
+import kotlin.random.Random
 
 class CrimeListViewModel : ViewModel(){
 
@@ -11,7 +12,8 @@ class CrimeListViewModel : ViewModel(){
         {
             val crime = Crime()
             crime.title = "Crime №$i"
-            crime.isSolved = 1 % 2 == 0
+            crime.isSolved = i % 2 == 0
+            crime.requiresPolice = (0..2).random()
             crimes += crime
         }
     }

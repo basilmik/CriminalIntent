@@ -84,8 +84,17 @@ class CrimeListFragment: Fragment() {
         // отвечает за содвание рпедставления н адисплее, оборачивает его в холдер и возвращает результат
         // наполняет list_item_view.xml и передает полученное представление
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
-            val view = layoutInflater.inflate(R.layout.list_item_crime,parent,false)
-            return CrimeHolder(view)
+            // добавить логику, к возращает различные ViewHolder в зависимости от ViewType
+            // возвращаемого функцией getItemViewType(Int)
+
+            val isPoliceRequired = getItemViewType(viewType)
+            return if (isPoliceRequired == 1) {
+                val view = layoutInflater.inflate(R.layout.list_item_crime, parent, false)
+                CrimeHolder(view)
+            } else {
+                val view = layoutInflater.inflate(R.layout.list_item_crime_police, parent, false)
+                CrimeHolder(view)
+            }
         }
 
         // количество элементов в наборе данных
@@ -96,6 +105,13 @@ class CrimeListFragment: Fragment() {
         override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
             val crime = crimes[position]
             holder.bind(crime)
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            //return super.getItemViewType(position)
+            super.getItemViewType(position)
+            return crimes[position].requiresPolice
+
         }
 
     }
