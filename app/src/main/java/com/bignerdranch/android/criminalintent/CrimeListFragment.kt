@@ -1,6 +1,8 @@
 package com.bignerdranch.android.criminalintent
 
+import android.icu.text.DateFormat.getDateInstance
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.text.DateFormat.SHORT
+import java.text.DateFormat.getDateInstance
 
 
 private const val TAG = "CrimeListFragment"
@@ -69,7 +73,8 @@ class CrimeListFragment: Fragment() {
         {
             this.crime = crime
             titleTextView.text = this.crime.title
-            dateTextView.text = this.crime.date.toString()
+            //dateTextView.text = this.crime.date.toString()
+            dateTextView.text = DateFormat.format("EEEE, MMMM dd, yyyy.",this.crime.date)
             solvedImageView.visibility = if (crime.isSolved)
             {
                 View.VISIBLE
