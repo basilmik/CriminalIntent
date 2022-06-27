@@ -1,5 +1,6 @@
 package com.bignerdranch.android.criminalintent
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,11 +14,23 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 
 private const val TAG = "CrimeListFragment"
 
 class CrimeListFragment: Fragment() {
+
+    /*
+    *
+    * */
+
+    interface Callbacks
+    {
+        fun onCrimeSelected(crimeID: UUID)
+    }
+
+    private var callbacks: Callbacks? = null
 
     private lateinit var crimeRecyclerView: RecyclerView
     private var adapter: CrimeAdapter? = CrimeAdapter(emptyList())
@@ -27,6 +40,10 @@ class CrimeListFragment: Fragment() {
         ViewModelProvider(this).get(CrimeListViewModel::class.java)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks?
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
@@ -50,6 +67,12 @@ class CrimeListFragment: Fragment() {
                 updateUI(crimes)
             }
         })
+    }
+
+    override fun onDetach()
+    {
+        super.onDetach()
+        callbacks = null
     }
 
     private fun updateUI(crimes: List<Crime>)
@@ -90,8 +113,7 @@ class CrimeListFragment: Fragment() {
 
         override fun onClick(v: View)
         {
-            Toast.makeText(context, "${crime.title} pressed!", Toast.LENGTH_SHORT).show()
-
+            callbacks?.onCrimeSelected(crime.id)
         }
 
     }
@@ -99,7 +121,7 @@ class CrimeListFragment: Fragment() {
 
     private inner class CrimeAdapter(var crimes: List<Crime>): RecyclerView.Adapter<CrimeHolder>()
     {
-        // отвечает за содвание рпедставления н адисплее, оборачивает его в холдер и возвращает результат
+        // отвечает за содвание представления на дисплее, оборачивает его в холдер и возвращает результат
         // наполняет list_item_view.xml и передает полученное представление
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
             val view = layoutInflater.inflate(R.layout.list_item_crime,parent,false)
